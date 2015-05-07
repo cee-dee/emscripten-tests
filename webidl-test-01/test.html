@@ -1,0 +1,10 @@
+<!doctype html>
+<html>
+  <script src="test.js"></script>
+  <script>
+    var instance = new Module.MyClass(10);
+    instance.incrementX();
+    console.log(instance.getX()); // 11
+    Module.destroy(instance);
+  </script>
+</html>
