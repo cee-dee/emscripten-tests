@@ -1,0 +1,17 @@
+src/DecodeImage
+ext_src/libJpeg/a.out
+ext_src/libJpeg/a.out.js
+**/Makefile
+**/config.log
+**/config.status
+**/libtool
+**/*.lo
+**/*.o
+**/.libs/*
+**/.deps/*
+**/cjpeg
+**/djpeg
+**/jpegtran
+**/libjpeg.la
+**/rdjpgcom
+**/wrjpgcom

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>loadJpegs</title>
+  </head>
+  <script src="DecodeImage.js"  type="text/javascript"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"  type="text/javascript"></script>
+  
+  <script type="text/javascript">
+      var scanline, allTimes = 0;
+      
+      var maxHeight = 0; //maximum height of images, used for output container size
+      
+      var processJpgArray = function(data) {
+        var imgData, data, decoder; //decoder & actual image data
+        var imageWidth, imageHeight, numChannels; //image information
+        var start, end, localTime; //stats
+        var container, work_canvas, ctx; //html elemens
+        var x, y, memindex, channel2, channel3; //indexing
+        
+        start = Date.now();
+        decoder = new Module.DecodeImage();
+        decoder.prepare(data.length, function(memory_view) {
+			memory_view.set(data);
+        });
+
+        decoder.initialize(1, 8); // max downscaling is 1/8
+        decoder.getScanlineStorage(function(memory_view) {
+          scanline = memory_view;
+        });
+        
+        
+        
+        imageWidth = decoder.getImageWidth();
+        imageHeight = decoder.getImageHeight();
+        
+        maxHeight = imageHeight > maxHeight ? imageHeight : maxHeight;
+        
+        numChannels = (scanline.length / imageWidth); //may be 1 (grayscale) or 3 (color). JPEGs don't have alpha channels
+        
+        container = $('<div class="outputContainer">');
+        container.css('height', (maxHeight + 20 ) + 'px')
+        container.css('float','left');
+        container.css('border','1px solid grey');
+        container.css('margin','5px');
+        container.css('padding','5px');
+        
+         $('.outputContainer').css('height', (maxHeight + 20) + 'px'); //set all previous containers to the current maxHeight
+        
+        work_canvas = document.createElement('canvas');
+        work_canvas.width = imageWidth;
+        work_canvas.height = imageHeight;
+        ctx = work_canvas.getContext('2d');
+
+        
+        
+        // first, create a new ImageData to contain our pixels
+        imgData = ctx.createImageData(imageWidth, imageHeight); // width x height
+        data = imgData.data;
+
+        memIndex = 0;
+        
+        channel2 = numChannels === 1 ? 0 : 1;
+        channel3 = numChannels === 1 ? 0 : 2;
+        
+        
+        while (decoder.retrieveNextScanline()) {
+          for (x=0, y=0; x < imageWidth * numChannels; y = y + 4, x = x + numChannels) {
+              data[memIndex + y + 0] = scanline[x + 0];
+              data[memIndex + y + 1] = scanline[x + channel2];
+              data[memIndex + y + 2] = scanline[x + channel3];
+              data[memIndex + y + 3] = 255;
+          }
+          memIndex = memIndex + imageWidth * 4;
+        }
+        
+        end = Date.now();
+        localTime = end - start;
+        allTimes = allTimes + localTime;
+        
+        $('#allTimes').html("Total time: " +(allTimes / 1000) + " ms");
+        
+
+        // now we can draw our imagedata onto the canvas
+        ctx.putImageData(imgData, 0, 0);
+        
+        $(container).append(work_canvas);
+        $(container).append('<div>' + (localTime / 1000) + ' ms</div>');
+        $('#results').append(container);
+        
+		// has to be called to avoid memory leaks, but still has some problems
+        decoder.delete();
+      };
+	  
+      var loadJpgFile = function(file) {
+        var fileReader = new FileReader();
+        fileReader.onload = function() {
+          processJpgArray(new Uint8Array(this.result));
+        };
+        fileReader.readAsArrayBuffer(file);
+      };
+
+      var loadJpgFiles = function(files) {
+        for (var i = 0, len = files.length; i < len; i += 1) {
+          loadJpgFile(files.item(i));
+        }
+      }
+    </script>
+  
+  <body>
+    <input type="file" multiple="multiple" onchange="loadJpgFiles(this.files)" accept="image/jpeg"/>
+    <div id="allTimes"></div>
+    <div id="results"></div>
+    
+  </body>
+</html>

@@ -1,0 +1,1 @@
+emcc --bind -I ../ext_src/libJpeg DecodeImage.cpp ../ext_src/libJpeg/.libs/libjpeg.a  -o DecodeImage.js -s DEMANGLE_SUPPORT=1 -s ALLOW_MEMORY_GROWTH=1 -O0 -s ASSERTIONS=2 -Werror
