@@ -79,14 +79,14 @@
         localTime = end - start;
         allTimes = allTimes + localTime;
         
-        $('#allTimes').html("Total time: " +(allTimes / 1000) + " ms");
+        $('#allTimes').html("Total time: " +(allTimes / 1000) + " s");
         
 
         // now we can draw our imagedata onto the canvas
         ctx.putImageData(imgData, 0, 0);
         
         $(container).append(work_canvas);
-        $(container).append('<div>' + (localTime / 1000) + ' ms</div>');
+        $(container).append('<div>' + (localTime / 1000) + ' s</div>');
         $('#results').append(container);
         
 		// has to be called to avoid memory leaks, but still has some problems
