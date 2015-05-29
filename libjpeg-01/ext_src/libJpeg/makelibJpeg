@@ -1,0 +1,3 @@
+emconfigure ./configure --disable-shared
+emmake make clean
+emmake make -e CPPFLAGS=$1

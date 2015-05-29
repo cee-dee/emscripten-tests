@@ -1,1 +1,4 @@
-emcc --bind -I ../ext_src/libJpeg DecodeImage.cpp ../ext_src/libJpeg/.libs/libjpeg.a  -o DecodeImage.js -s DEMANGLE_SUPPORT=1 -s ALLOW_MEMORY_GROWTH=1 -O0 -s ASSERTIONS=2 -Werror
+echo "rm DecodeImage.js DecodeImage.js.mem"
+rm DecodeImage.js DecodeImage.js.mem
+time emcc --bind -I ../ext_src/libJpeg DecodeImage.cpp ../ext_src/libJpeg/.libs/libjpeg.a  -o DecodeImage.js -s DEMANGLE_SUPPORT=1 -s ALLOW_MEMORY_GROWTH=1 $1 -s MODULARIZE=1 -s EXPORT_NAME="'libJpeg'"
+du -s -h DecodeImage.js DecodeImage.js.mem

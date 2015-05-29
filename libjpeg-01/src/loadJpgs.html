@@ -20,7 +20,7 @@
         var x, y, memindex, channel2, channel3; //indexing
         
         start = Date.now();
-        decoder = new Module.DecodeImage();
+        decoder = new myModule.DecodeImage();
         decoder.prepare(data.length, function(memory_view) {
 			memory_view.set(data);
         });
@@ -102,6 +102,7 @@
       };
 
       var loadJpgFiles = function(files) {
+	myModule = libJpeg();
         for (var i = 0, len = files.length; i < len; i += 1) {
           loadJpgFile(files.item(i));
         }
@@ -109,6 +110,9 @@
     </script>
   
   <body>
+    <script>
+        var myModule;
+    </script>
     <input type="file" multiple="multiple" onchange="loadJpgFiles(this.files)" accept="image/jpeg"/>
     <div id="allTimes"></div>
     <div id="results"></div>

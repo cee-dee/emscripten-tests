@@ -35,7 +35,7 @@ DecodeImage::~DecodeImage()
 void DecodeImage::prepare(int sizeOfData, emscripten::val callback)
 {
     // create and assign libjpegs internal data structure
-    struct jpeg_error_mgr jerr;
+    struct jpeg_error_mgr* jerr;
     struct jpeg_decompress_struct cinfo;
     this->cinfo = cinfo;
     this->sizeOfData = sizeOfData;
@@ -45,7 +45,7 @@ void DecodeImage::prepare(int sizeOfData, emscripten::val callback)
     callback(emscripten::memory_view<uint8_t>(this->sizeOfData, this->imageData));
 
     // Allocate and initialize JPEG decompression object
-    this->cinfo.err = jpeg_std_error(&jerr);
+    this->cinfo.err = jpeg_std_error(jerr);
 
     // Now we can initialize the JPEG decompression object.
     jpeg_create_decompress(&this->cinfo);
