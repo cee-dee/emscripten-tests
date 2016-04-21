@@ -1,0 +1,9 @@
+# Re-enable if --tracing option has been changed after last compilation
+# emcc --clear-cache
+cd ext
+./build
+cd ..
+rm main.js
+emcc --bind -Iext main.cpp ext/libs/libmean.a -o main.js --tracing -g4
+
+# TODO: make source mapper work properly for libmean.a

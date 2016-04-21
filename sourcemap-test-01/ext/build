@@ -1,0 +1,3 @@
+mkdir libs
+emmake make clean
+emmake make
